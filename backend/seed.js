@@ -6,6 +6,7 @@ const User = require('./models/User');
 const Product = require('./models/Product');
 const Dealer = require('./models/Dealer');
 const Inventory = require('./models/Inventory');
+const Order = require('./models/Order');
 
 const seedIndiaData = async () => {
   try {
@@ -18,14 +19,18 @@ const seedIndiaData = async () => {
     await Inventory.deleteMany({});
     await Product.deleteMany({});
     await Dealer.deleteMany({});
-    await User.deleteMany({ role: 'dealer' });
+    await User.deleteMany({});
 
     // Hash a generic password for all dealers
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash('dealer123', salt);
 
-    // 1. Create Dealer Users
-    const dealerUsersToCreate = [
+    // 1. Create Dealer & Customer Users
+    const usersToCreate = [
+      // Test Customer so you can log in and place orders
+      { name: 'Test Customer', email: 'customer@test.com', password, role: 'customer' },
+      
+      // Dealers
       { name: 'Ravi Kumar', email: 'ravi.chennai@test.com', password, role: 'dealer' },
       { name: 'Amit Shah Traders', email: 'amit.mumbai@test.com', password, role: 'dealer' },
       { name: 'Gupta Steels', email: 'gupta.delhi@test.com', password, role: 'dealer' },
@@ -36,7 +41,10 @@ const seedIndiaData = async () => {
       { name: 'Deshmukh Supply', email: 'deshmukh.pune@test.com', password, role: 'dealer' }
     ];
 
-    const createdUsers = await User.insertMany(dealerUsersToCreate);
+    const createdUsers = await User.insertMany(usersToCreate);
+
+    // Skip the first user (customer) when creating dealers
+    const dealerUsers = createdUsers.slice(1);
 
     // 2. Create Global Products
     const productData = [
@@ -58,7 +66,7 @@ const seedIndiaData = async () => {
     // 3. Create Dealer Profiles with Pan-India Locations
     const dealersData = [
       {
-        user: createdUsers[0]._id, // Chennai
+        user: dealerUsers[0]._id, // Chennai
         storeName: 'Chennai South Construction Supply',
         contactPhone: '9840123456',
         address: '45 South Phase, Guindy Industrial Estate, Chennai, Tamil Nadu',
@@ -66,7 +74,7 @@ const seedIndiaData = async () => {
         isVerified: true
       },
       {
-        user: createdUsers[1]._id, // Mumbai
+        user: dealerUsers[1]._id, // Mumbai
         storeName: 'Maharashtra Build Supply',
         contactPhone: '9820123456',
         address: '12 Andheri Kurla Road, Andheri East, Mumbai, Maharashtra',
@@ -74,7 +82,7 @@ const seedIndiaData = async () => {
         isVerified: true
       },
       {
-        user: createdUsers[2]._id, // Delhi
+        user: dealerUsers[2]._id, // Delhi
         storeName: 'Capital Steel & Cement',
         contactPhone: '9810123456',
         address: '34 Okhla Industrial Area Phase 1, New Delhi',
@@ -82,7 +90,7 @@ const seedIndiaData = async () => {
         isVerified: true
       },
       {
-        user: createdUsers[3]._id, // Hyderabad
+        user: dealerUsers[3]._id, // Hyderabad
         storeName: 'Deccan Hardware Materials',
         contactPhone: '9989123456',
         address: 'Madapur Main Road, HITEC City, Hyderabad, Telangana',
@@ -90,7 +98,7 @@ const seedIndiaData = async () => {
         isVerified: true
       },
       {
-        user: createdUsers[4]._id, // Kolkata
+        user: dealerUsers[4]._id, // Kolkata
         storeName: 'Bengal Builders Depot',
         contactPhone: '9830123456',
         address: 'Sector V, Salt Lake City, Kolkata, West Bengal',
@@ -98,7 +106,7 @@ const seedIndiaData = async () => {
         isVerified: true
       },
       {
-        user: createdUsers[5]._id, // Bangalore
+        user: dealerUsers[5]._id, // Bangalore
         storeName: 'Karnataka Tech Build',
         contactPhone: '9845123456',
         address: 'Peenya Industrial Area, Bengaluru, Karnataka',
@@ -106,7 +114,7 @@ const seedIndiaData = async () => {
         isVerified: true
       },
       {
-        user: createdUsers[6]._id, // Ahmedabad
+        user: dealerUsers[6]._id, // Ahmedabad
         storeName: 'Gujarat Cement Distributors',
         contactPhone: '9898123456',
         address: 'Sarkhej-Gandhinagar Highway, Ahmedabad, Gujarat',
@@ -114,7 +122,7 @@ const seedIndiaData = async () => {
         isVerified: true
       },
       {
-        user: createdUsers[7]._id, // Pune
+        user: dealerUsers[7]._id, // Pune
         storeName: 'Pune Iron & Steel Works',
         contactPhone: '9922123456',
         address: 'Hinjawadi Phase 2, Pune, Maharashtra',
