@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import API from '../api/axios';
 import { io } from 'socket.io-client';
+import { products as mockProducts } from '../data/products';
 import { Package, ListOrdered, CheckCircle, XCircle } from 'lucide-react';
 
 const Dashboard = () => {
@@ -25,14 +26,19 @@ const Dashboard = () => {
           const { data } = await API.get('/orders/myorders');
           setOrders(data);
         } else if (user.role === 'dealer') {
-          const [orderRes, invRes, prodRes] = await Promise.all([
-             API.get('/orders/dealer'),
-             API.get('/inventory/my'),
-             API.get('/products') 
-          ]);
-          setOrders(orderRes.data.reverse()); // Show newest first
-          setInventory(invRes.data);
-          setProducts(prodRes.data);
+          // Use individual try/catches so one 404 doesn't crash the whole dashboard
+          let orderData = [], invData = [], prodData = mockProducts;
+          
+          try { const res = await API.get('/orders/dealer'); orderData = res.data; } catch(e) {}
+          try { const res = await API.get('/inventory/my'); invData = res.data; } catch(e) {}
+          try { 
+              const res = await API.get('/products'); 
+              if (res.data && res.data.length > 0) prodData = res.data;
+          } catch(e) { console.log('Falling back to local mock products'); }
+          
+          setOrders(orderData.reverse()); // Show newest first
+          setInventory(invData);
+          setProducts(prodData);
           
           // Setup WebSocket for Dealer
           if (user.dealerId) {
@@ -165,7 +171,7 @@ const Dashboard = () => {
                        <select required className="w-full p-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white" value={newInvProductId} onChange={e => setNewInvProductId(e.target.value)}>
                           <option value="">-- Choose Product defined by System --</option>
                           {products.map(p => (
-                             <option key={p._id} value={p._id}>{p.name} - {p.category}</option>
+                             <option key={p.id || p._id} value={p.id || p._id}>{p.name} - {p.category}</option>
                           ))}
                        </select>
                     </div>
@@ -187,19 +193,24 @@ const Dashboard = () => {
                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
                     <h3 className="font-bold text-gray-800 mb-3 sticky top-0 bg-white py-2">Current Active Stock</h3>
                     {inventory.length === 0 ? <p className="text-sm text-gray-500 italic">No inventory added yet. Start by adding stock.</p> : null}
-                    {inventory.map(inv => (
-                       <div key={inv._id} className="flex justify-between items-center p-3 border border-gray-200 rounded-lg hover:bg-orange-50 transition">
-                          <div>
-                             <p className="font-bold text-gray-900 line-clamp-1">{inv.product?.name || 'Unknown Product'}</p>
-                             <p className="text-sm text-gray-500 font-medium">₹{inv.price}</p>
-                          </div>
-                          <div className="text-right">
-                             <span className={`px-2 py-1 flex items-center justify-center rounded text-[11px] font-black uppercase ${inv.quantity > 10 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                Stock: {inv.quantity}
-                             </span>
-                          </div>
-                       </div>
-                    ))}
+                     {inventory.map(inv => {
+                        const localStaticProd = mockProducts.find(p => String(p.id) === String(inv.product?._id || inv.product));
+                        const displayTitle = inv.product?.name || localStaticProd?.name || 'Unknown Product';
+                        
+                        return (
+                           <div key={inv._id} className="flex justify-between items-center p-3 border border-gray-200 rounded-lg hover:bg-orange-50 transition">
+                              <div>
+                                 <p className="font-bold text-gray-900 line-clamp-1">{displayTitle}</p>
+                                 <p className="text-sm text-gray-500 font-medium">₹{inv.price}</p>
+                              </div>
+                              <div className="text-right">
+                                 <span className={`px-2 py-1 flex items-center justify-center rounded text-[11px] font-black uppercase ${inv.quantity > 10 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                    Stock: {inv.quantity}
+                                 </span>
+                              </div>
+                           </div>
+                        );
+                     })}
                  </div>
               </div>
            </div>

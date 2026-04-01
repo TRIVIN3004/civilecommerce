@@ -87,9 +87,15 @@ const getMyOrders = async (req, res) => {
 // @access  Private/Dealer
 const getDealerOrders = async (req, res) => {
     try {
-        const dealer = await Dealer.findOne({ user: req.user._id });
+        let dealer = await Dealer.findOne({ user: req.user._id });
         if (!dealer) {
-            return res.status(404).json({ message: 'Dealer profile not found' });
+            dealer = await Dealer.create({
+              user: req.user._id,
+              storeName: `${req.user.name || 'Local'} Store`,
+              contactPhone: "0000000000",
+              address: "Please update your address",
+              location: { type: 'Point', coordinates: [80.2707, 13.0827] }
+            });
         }
   
         const orders = await Order.find({ dealer: dealer._id }).populate('customer', 'name email phone').populate('items.inventory');

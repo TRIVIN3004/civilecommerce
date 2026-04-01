@@ -6,9 +6,16 @@ const Dealer = require('../models/Dealer');
 // @access  Private/Dealer
 const getMyInventory = async (req, res) => {
   try {
-    const dealer = await Dealer.findOne({ user: req.user._id });
+    let dealer = await Dealer.findOne({ user: req.user._id });
     if (!dealer) {
-      return res.status(404).json({ message: 'Dealer profile not found' });
+      // Auto-create basic dealer profile if missing
+      dealer = await Dealer.create({
+        user: req.user._id,
+        storeName: `${req.user.name || 'Local'} Store`,
+        contactPhone: "0000000000",
+        address: "Please update your address",
+        location: { type: 'Point', coordinates: [80.2707, 13.0827] }
+      });
     }
 
     const inventory = await Inventory.find({ dealer: dealer._id }).populate('product');
@@ -25,9 +32,16 @@ const updateInventory = async (req, res) => {
   try {
     const { productId, price, quantity } = req.body;
 
-    const dealer = await Dealer.findOne({ user: req.user._id });
+    let dealer = await Dealer.findOne({ user: req.user._id });
     if (!dealer) {
-      return res.status(404).json({ message: 'Dealer profile not found' });
+      // Auto-create basic dealer profile if missing
+      dealer = await Dealer.create({
+        user: req.user._id,
+        storeName: `${req.user.name || 'Local'} Store`,
+        contactPhone: "0000000000",
+        address: "Please update your address",
+        location: { type: 'Point', coordinates: [80.2707, 13.0827] }
+      });
     }
 
     let inventory = await Inventory.findOne({ dealer: dealer._id, product: productId });
