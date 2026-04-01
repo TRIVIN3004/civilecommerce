@@ -9,12 +9,13 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden flex flex-col h-full group">
-      <div className="h-56 bg-white flex flex-col justify-center items-center p-4 relative border-b border-gray-50">
+      <div className="h-48 w-full bg-white flex items-center justify-center p-4 relative overflow-hidden">
         {product.image || (product.images && product.images[0]) ? (
           <img 
              src={product.image || product.images[0]} 
              alt={product.name} 
-             className="max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" 
+             onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x300/e2e8f0/475569?text=Product+Image' }}
+             className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" 
           />
         ) : (
           <span className="text-gray-400 font-medium">No Image</span>
@@ -43,7 +44,7 @@ const ProductCard = ({ product }) => {
           <div className="mb-4 text-sm bg-gray-50/50 rounded-xl border border-gray-200 p-3 max-h-64 overflow-y-auto w-full custom-scrollbar">
             <h4 className="font-bold text-gray-800 mb-3 border-b border-gray-200 pb-2 text-xs uppercase tracking-wider">Available Dealers</h4>
             {availableDealers.length > 0 ? availableDealers.map(dealer => (
-              <DealerCard key={dealer.id} dealer={dealer} />
+              <DealerCard key={dealer.id} dealer={dealer} productId={product.id || product._id} />
             )) : <p className="text-xs text-red-500 italic p-2 bg-red-50 rounded">No dealers stock this right now.</p>}
           </div>
         )}

@@ -6,7 +6,7 @@ export const products = [
     price: 390, // INR per 50kg bag
     stock: 500,
     unit: "50kg Bag",
-    image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/232f3e/ff9900.jpg&text=UltraTech+Cement"
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const products = [
     price: 375, // INR per 50kg bag
     stock: 800,
     unit: "50kg Bag",
-    image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/fcd200/232f3e.jpg&text=Ambuja+Plus+Cement"
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const products = [
     price: 68000, // INR per Ton
     stock: 45,
     unit: "Ton",
-    image: "https://images.unsplash.com/photo-1533575770077-052fa2c609fc?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/e5e7eb/1f2937.jpg&text=Tata+Tiscon+Steel"
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ export const products = [
     price: 66500, // INR per Ton
     stock: 60,
     unit: "Ton",
-    image: "https://plus.unsplash.com/premium_photo-1673356301535-224a0f16d755?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/cfd8dc/37474f.jpg&text=JSW+Neo+Steel"
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ export const products = [
     price: 8.5, // INR per piece
     stock: 25000,
     unit: "Piece",
-    image: "https://images.unsplash.com/photo-1588612143162-80db6ced7ab8?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/b71c1c/ffffff.jpg&text=Red+Clay+Bricks"
   },
   {
     id: 6,
@@ -51,7 +51,7 @@ export const products = [
     price: 7.0, // INR per piece
     stock: 15000,
     unit: "Piece",
-    image: "https://images.unsplash.com/photo-1517454271811-06103362a222?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/9e9e9e/212121.jpg&text=Fly+Ash+Bricks"
   },
   {
     id: 7,
@@ -60,7 +60,7 @@ export const products = [
     price: 18000, // INR per Lorry/Truck load
     stock: 20,
     unit: "Truck Load",
-    image: "https://images.unsplash.com/photo-1574044558296-a2b1f845a72f?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/d7ccc8/4e342e.jpg&text=Fine+River+Sand"
   },
   {
     id: 8,
@@ -69,6 +69,6 @@ export const products = [
     price: 12500, // INR per Lorry/Truck load
     stock: 35,
     unit: "Truck Load",
-    image: "https://images.unsplash.com/photo-1496030588698-fe221adfc196?q=80&w=800&auto=format&fit=crop"
+    image: "https://dummyimage.com/600x400/a1887f/3e2723.jpg&text=Washed+M-Sand"
   }
 ];

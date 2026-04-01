@@ -1,7 +1,9 @@
 import React from 'react';
 import { MapPin, Phone, ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const DealerCard = ({ dealer }) => {
+const DealerCard = ({ dealer, productId }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-white p-3 rounded-lg border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(255,153,0,0.15)] hover:border-amazon-orange transition-all duration-300 flex flex-col mb-3 last:mb-0 group/dealer">
       <div className="flex justify-between items-start mb-2">
@@ -27,7 +29,11 @@ const DealerCard = ({ dealer }) => {
           className="flex-1 bg-amazon-orange hover:bg-[#e68a00] text-amazon-dark font-bold text-xs py-2 rounded-md transition-all shadow-sm active:scale-95 flex items-center justify-center"
           onClick={(e) => {
             e.preventDefault();
-            console.log(`Ordering from ${dealer.name}`);
+            if (productId) {
+               navigate(`/order/${productId}/${dealer.id}`);
+            } else {
+               console.log(`Ordering from ${dealer.name}`);
+            }
           }}
         >
           <ShoppingCart className="w-3.5 h-3.5 mr-1.5" /> Order
