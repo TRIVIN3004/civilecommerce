@@ -1,50 +1,46 @@
 import React from 'react';
-import { ShoppingCart, MapPin, Phone } from 'lucide-react';
+import { MapPin, Phone, ShoppingCart } from 'lucide-react';
 
-const DealerCard = ({ inventory, onAddToCart }) => {
+const DealerCard = ({ dealer }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm hover:shadow-lg border border-gray-100 p-5 relative overflow-hidden flex flex-col h-full transition-shadow duration-300 group">
-      <div className="absolute top-0 right-0 bg-green-500 text-white text-[10px] uppercase font-bold px-3 py-1 rounded-bl-lg shadow-sm">
-        {inventory.quantity} in stock
+    <div className="bg-white p-3 rounded-lg border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(255,153,0,0.15)] hover:border-amazon-orange transition-all duration-300 flex flex-col mb-3 last:mb-0 group/dealer">
+      <div className="flex justify-between items-start mb-2">
+        <div className="min-w-0 pr-2">
+          <h4 className="font-bold text-gray-900 text-sm leading-tight truncate group-hover/dealer:text-amazon-orange transition-colors" title={dealer.name}>
+            {dealer.name}
+          </h4>
+          <p className="text-[11px] text-gray-500 flex items-center mt-1 truncate" title={dealer.location}>
+            <MapPin className="w-3 h-3 mr-1 flex-shrink-0 text-gray-400" />
+            <span className="truncate">{dealer.location} ({dealer.distance} km)</span>
+          </p>
+        </div>
+        <div className="text-right flex-shrink-0">
+          <span className="font-black text-amazon-dark text-sm block">₹{dealer.price}</span>
+          <span className={`inline-block mt-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded ${dealer.stock > 0 ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+            {dealer.stock > 0 ? `${dealer.stock} in stock` : 'Out of stock'}
+          </span>
+        </div>
       </div>
       
-      <div className="flex-grow">
-          <h3 className="font-bold text-lg text-gray-900 mb-1 pr-16 group-hover:text-amazon-orange transition-colors">
-             {inventory.dealer.storeName}
-          </h3>
-          
-          <div className="flex items-start mt-2 mb-1">
-             <MapPin className="w-4 h-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" />
-             <p className="text-sm text-gray-500 line-clamp-2">{inventory.dealer.address}</p>
-          </div>
-          <div className="flex items-center mb-4">
-             <Phone className="w-4 h-4 text-gray-400 mr-1 flex-shrink-0" />
-             <p className="text-sm text-gray-500 font-medium">{inventory.dealer.contactPhone}</p>
-          </div>
-      </div>
-      
-      <div className="mt-4 pt-4 border-t border-gray-100">
-          <div className="flex justify-between items-end mb-4">
-             <div>
-                <span className="text-xs text-gray-400 uppercase font-semibold block mb-1">Price</span>
-                <span className="text-2xl font-black text-gray-900 border-b-2 border-transparent">₹{inventory.price}</span>
-             </div>
-             <div className="text-right">
-                <span className="text-xs text-[#007185] font-medium hover:text-amazon-orange cursor-pointer block transition-colors">
-                   Details
-                </span>
-                <span className="text-xs font-semibold text-gray-600 flex items-center mt-0.5">
-                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span> Ships Today
-                </span>
-             </div>
-          </div>
-          
-          <button 
-            onClick={() => onAddToCart(inventory)}
-            className="w-full bg-amazon-orange hover:bg-orange-500 text-amazon-dark active:scale-[0.98] py-2.5 rounded-xl border border-[#FCD200] flex items-center justify-center font-bold shadow-sm transition-all shadow-[#D5D9D9]"
-          >
-             <ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
-          </button>
+      <div className="flex gap-2 mt-1 pt-2 border-t border-gray-50">
+        <button 
+          className="flex-1 bg-amazon-orange hover:bg-[#e68a00] text-amazon-dark font-bold text-xs py-2 rounded-md transition-all shadow-sm active:scale-95 flex items-center justify-center"
+          onClick={(e) => {
+            e.preventDefault();
+            console.log(`Ordering from ${dealer.name}`);
+          }}
+        >
+          <ShoppingCart className="w-3.5 h-3.5 mr-1.5" /> Order
+        </button>
+        <button 
+          className="flex-1 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-bold text-xs py-2 rounded-md transition-all active:scale-95 flex items-center justify-center"
+          onClick={(e) => {
+            e.preventDefault();
+            console.log(`Contacting ${dealer.name}`);
+          }}
+        >
+          <Phone className="w-3.5 h-3.5 mr-1.5 text-gray-500" /> Contact
+        </button>
       </div>
     </div>
   );

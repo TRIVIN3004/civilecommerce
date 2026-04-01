@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import API from '../api/axios';
+import { products as mockProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import SidebarFilter from '../components/SidebarFilter';
 import { Truck, ShieldCheck, MapPin, TrendingUp } from 'lucide-react';
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(mockProducts);
+  const [loading, setLoading] = useState(false);
   
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -28,22 +28,12 @@ const Home = () => {
   }, [categoryQuery]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const { data } = await API.get(`/products${keywordQuery ? `?keyword=${keywordQuery}` : ''}`);
-        setProducts(data);
-      } catch (error) {
-        console.error('Failed to fetch products', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
+    // Local keyword filtering handled directly in filteredProducts below
   }, [keywordQuery]);
 
   const filteredProducts = products.filter(p => {
      if(filters.category && filters.category !== 'All' && p.category !== filters.category) return false;
+     if(keywordQuery && !p.name.toLowerCase().includes(keywordQuery.toLowerCase())) return false;
      return true;
   });
 
@@ -127,16 +117,16 @@ const Home = () => {
                        ))}
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                       {filteredProducts.slice(0, 4).map((product) => (
-                          <div key={product._id} className="relative">
-                             <div className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black uppercase px-2 py-1 flex items-center rounded z-10 shadow-md">
-                                Hot in your area
-                             </div>
-                             <ProductCard product={product} />
-                          </div>
-                       ))}
-                    </div>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredProducts.slice(0, 4).map((product) => (
+                           <div key={product.id || product._id} className="relative">
+                              <div className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black uppercase px-2 py-1 flex items-center rounded z-10 shadow-md">
+                                 Hot in your area
+                              </div>
+                              <ProductCard product={product} />
+                           </div>
+                        ))}
+                     </div>
                   )}
                </div>
             )}
@@ -163,7 +153,7 @@ const Home = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product) => (
-                  <ProductCard key={product._id} product={product} />
+                  <ProductCard key={product.id || product._id} product={product} />
                 ))}
               </div>
             )}
