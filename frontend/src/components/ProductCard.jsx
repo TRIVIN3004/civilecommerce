@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { getDealersForProduct } from '../data/dealers';
 import DealerCard from './DealerCard';
+import { CartContext } from '../context/CartContext';
+import { ShoppingCart } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
   const [showDealers, setShowDealers] = useState(false);
   const availableDealers = getDealersForProduct(product.id || product._id);
+  const { addToCart } = useContext(CartContext);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden flex flex-col h-full group">
@@ -49,12 +56,21 @@ const ProductCard = ({ product }) => {
           </div>
         )}
 
-        <button 
-          onClick={() => setShowDealers(!showDealers)}
-          className="w-full mt-auto block text-center bg-amazon-bg hover:bg-amazon-orange text-amazon-dark hover:text-white font-bold py-2.5 rounded-xl transition-colors border border-gray-300 hover:border-amazon-orange shadow-sm"
-        >
-          {showDealers ? 'Hide Dealers' : 'Find Dealers'}
-        </button>
+        <div className="flex gap-2 w-full mt-auto">
+          <button 
+            onClick={handleAddToCart}
+            className="flex-1 flex items-center justify-center bg-amazon-orange hover:bg-[#e68a00] text-amazon-dark font-bold py-2.5 rounded-xl transition-colors shadow-sm active:scale-[0.98]"
+          >
+            <ShoppingCart className="w-5 h-5 mr-1" />
+            Add to Cart
+          </button>
+          <button 
+            onClick={() => setShowDealers(!showDealers)}
+            className="flex-1 text-center bg-amazon-bg hover:bg-gray-100 text-amazon-dark font-bold py-2.5 rounded-xl transition-colors border border-gray-300 shadow-sm"
+          >
+            {showDealers ? 'Hide Dealers' : 'Find Dealers'}
+          </button>
+        </div>
       </div>
     </div>
   );

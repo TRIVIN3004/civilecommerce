@@ -1,30 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ShoppingBag, ShieldCheck } from 'lucide-react';
+import { CartContext } from '../context/CartContext';
 
 const Cart = () => {
-  const [cart, setCart] = useState([]);
+  const { cartItems: cart, updateQuantity, removeFromCart: removeItem } = useContext(CartContext);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-    setCart(savedCart);
-  }, []);
-
-  const updateQuantity = (index, newQuantity) => {
-    const updatedCart = [...cart];
-    if (newQuantity > 0 && newQuantity <= updatedCart[index].maxQuantity) {
-       updatedCart[index].quantity = newQuantity;
-       setCart(updatedCart);
-       localStorage.setItem('cart', JSON.stringify(updatedCart));
-    }
-  };
-
-  const removeItem = (index) => {
-    const updatedCart = cart.filter((_, i) => i !== index);
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
 
   const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 

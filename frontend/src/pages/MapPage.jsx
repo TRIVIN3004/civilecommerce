@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import API from '../api/axios';
-import { MapPin } from 'lucide-react';
+import { MapPin, Package } from 'lucide-react';
+import { dealers } from '../data/dealers';
 
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -16,77 +16,53 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-const defaultCenter = [20.5937, 78.9629]; // Center of India
+// Center of Coimbatore
+const defaultCenter = [11.0168, 76.9558]; 
 
 const MapPage = () => {
-  const [dealers, setDealers] = useState([]);
-  const [userLocation, setUserLocation] = useState(defaultCenter);
-  const [loading, setLoading] = useState(true);
-  const [radius, setRadius] = useState(20);
-
-  useEffect(() => {
-    // Attempt to get user location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation([position.coords.latitude, position.coords.longitude]);
-          fetchDealers(position.coords.latitude, position.coords.longitude, radius);
-        },
-        (error) => {
-          console.error("Error getting location", error);
-          fetchDealers(defaultCenter[0], defaultCenter[1], radius);
-        }
-      );
-    } else {
-      fetchDealers(defaultCenter[0], defaultCenter[1], radius);
-    }
-  }, [radius]);
-
-  const fetchDealers = async (lat, lng, rad) => {
-    try {
-      setLoading(true);
-      const { data } = await API.get(`/dealers/nearby?lat=${lat}&lng=${lng}&radius=${rad}`);
-      setDealers(data);
-    } catch (error) {
-      console.error('Failed to fetch dealers', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] -mx-4 -mb-8">
-      <div className="bg-white p-4 shadow-sm z-10 flex gap-4 items-center relative">
-        <MapPin className="text-orange-500" />
-        <h2 className="text-lg font-bold">Nearby Dealers</h2>
-        <div className="ml-auto flex items-center gap-2">
-           <label className="text-sm font-medium">Search Radius (km):</label>
-           <select className="border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm" value={radius} onChange={e => setRadius(e.target.value)}>
-              <option value="5">5 km</option>
-              <option value="10">10 km</option>
-              <option value="20">20 km</option>
-              <option value="50">50 km</option>
-           </select>
+      <div className="bg-white p-4 shadow-sm z-10 flex gap-3 items-center relative border-b border-gray-200">
+        <div className="bg-orange-100 p-2 rounded-full">
+           <MapPin className="text-amazon-orange w-5 h-5" />
         </div>
+        <h2 className="text-xl font-bold font-poppins text-amazon-dark">Authorized Dealers in Coimbatore</h2>
       </div>
       
       <div className="flex-1 relative z-0">
-         <MapContainer center={userLocation} zoom={11} className="w-full h-full">
+         <MapContainer center={defaultCenter} zoom={12} className="w-full h-full z-0">
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/">OSM</a>'
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          
-          <Marker position={userLocation}>
-             <Popup>You are here</Popup>
-          </Marker>
 
           {dealers.map(dealer => (
-            <Marker key={dealer._id} position={[dealer.location.coordinates[1], dealer.location.coordinates[0]]}>
-              <Popup>
-                 <div className="font-bold text-gray-900">{dealer.storeName}</div>
-                 <div className="text-sm text-gray-600 mt-1">{dealer.address}</div>
-                 <div className="text-sm font-medium mt-2 p-1 bg-gray-100 rounded">Phone: {dealer.contactPhone}</div>
+            <Marker key={dealer.id} position={[dealer.latitude, dealer.longitude]}>
+              <Popup className="custom-popup">
+                 <div className="min-w-[200px]">
+                   <h3 className="font-extrabold text-lg text-gray-900 border-b border-gray-200 mb-1 pb-1">
+                     {dealer.name}
+                   </h3>
+                   <div className="text-sm font-medium text-gray-500 mb-3 flex items-center">
+                     <MapPin className="w-3 h-3 mr-1" />
+                     {dealer.location}
+                   </div>
+                   
+                   <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 shadow-inner">
+                     <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center">
+                       <Package className="w-3 h-3 mr-1" />
+                       Inventory Stock Info
+                     </div>
+                     <div className="space-y-1.5">
+                       {dealer.products.map((p, i) => (
+                          <div key={i} className="flex justify-between items-center text-sm border-b border-gray-100 last:border-0 pb-1 last:pb-0">
+                            <span className="text-gray-600">Variant {i+1}</span>
+                            <span className="font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded text-xs">{p.stock} units</span>
+                          </div>
+                       ))}
+                     </div>
+                   </div>
+                 </div>
               </Popup>
             </Marker>
           ))}

@@ -1,16 +1,17 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { CartContext } from '../context/CartContext';
 import { ShoppingCart, MapPin, Search, ChevronDown, User, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
+  const { cartItems } = useContext(CartContext);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Cart total items
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const cartItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const cartItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleLogout = () => {
     logout();

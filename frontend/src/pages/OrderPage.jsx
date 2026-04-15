@@ -11,6 +11,7 @@ const OrderPage = () => {
   const [product, setProduct] = useState(null);
   const [dealer, setDealer] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('Cash on Delivery (COD)');
 
   useEffect(() => {
     // Find product using local static data
@@ -36,8 +37,25 @@ const OrderPage = () => {
   }
 
   const handleConfirmOrder = () => {
-    alert(`Order Confirmed!\n${quantity}x ${product.name} from ${dealer.name}\nTotal: ₹${(dealer.price * quantity).toLocaleString()}`);
-    navigate('/');
+    if (!selectedPaymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    const orderDetails = {
+      product,
+      dealer,
+      quantity,
+      total: dealer.price * quantity,
+      paymentMethod: selectedPaymentMethod,
+      date: new Date().toISOString()
+    };
+
+    // Save order details
+    const existingOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+    localStorage.setItem('userOrders', JSON.stringify([...existingOrders, orderDetails]));
+
+    navigate('/order-success', { state: { orderDetails } });
   };
 
   return (
@@ -109,13 +127,49 @@ const OrderPage = () => {
            <span className="text-gray-600 font-bold">Total Amount</span>
            <span className="text-3xl font-black text-amazon-dark">₹{(dealer.price * quantity).toLocaleString()}</span>
         </div>
+
+        <div className="mb-8">
+          <h3 className="block text-sm font-bold text-gray-700 mb-3">Payment Method</h3>
+          <div className="space-y-3">
+            {['Cash on Delivery (COD)', 'UPI', 'Credit/Debit Card'].map((method) => (
+              <label 
+                key={method} 
+                className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all ${
+                  selectedPaymentMethod === method 
+                    ? 'border-amazon-orange bg-orange-50/50' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="relative flex items-center justify-center w-5 h-5 mr-4 border-2 border-gray-300 rounded-full">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={method}
+                    checked={selectedPaymentMethod === method}
+                    onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    className="absolute opacity-0 w-full h-full cursor-pointer"
+                  />
+                  {selectedPaymentMethod === method && (
+                    <div className="w-2.5 h-2.5 bg-amazon-orange rounded-full"></div>
+                  )}
+                  {selectedPaymentMethod === method && (
+                    <div className="absolute inset-[-2px] border-2 border-amazon-orange rounded-full pointer-events-none"></div>
+                  )}
+                </div>
+                <span className={`font-bold ${selectedPaymentMethod === method ? 'text-amazon-dark' : 'text-gray-700'}`}>
+                  {method}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
         
         <button 
           onClick={handleConfirmOrder}
           disabled={dealer.stock === 0}
           className={`w-full py-4 rounded-xl font-black text-lg transition-all shadow-md flex items-center justify-center ${dealer.stock > 0 ? 'bg-amazon-orange hover:bg-[#e68a00] text-amazon-dark hover:shadow-lg active:scale-[0.98]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
         >
-          {dealer.stock > 0 ? 'Confirm Order' : 'Out of Stock'}
+          {dealer.stock > 0 ? 'Place Order' : 'Out of Stock'}
         </button>
       </div>
     </div>
