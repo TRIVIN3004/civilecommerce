@@ -12,6 +12,13 @@ const OrderPage = () => {
   const [dealer, setDealer] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('Cash on Delivery (COD)');
+  const [address, setAddress] = useState({
+    fullName: '',
+    phone: '',
+    addressLine: '',
+    city: '',
+    pincode: ''
+  });
 
   useEffect(() => {
     // Find product using local static data
@@ -37,6 +44,27 @@ const OrderPage = () => {
   }
 
   const handleConfirmOrder = () => {
+    // Address Validation
+    const { fullName, phone, addressLine, city, pincode } = address;
+    if (!fullName || !phone || !addressLine || !city || !pincode) {
+      alert("Please fill in all address fields.");
+      return;
+    }
+    
+    // Strict phone validation (approx. 10 digits)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phone)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+    
+    // Strict pincode validation (6 digits for India mostly, or generic representation)
+    const pinRegex = /^[0-9]{6}$/;
+    if (!pinRegex.test(pincode)) {
+      alert("Please enter a valid 6-digit pincode.");
+      return;
+    }
+
     if (!selectedPaymentMethod) {
       alert("Please select a payment method.");
       return;
@@ -48,6 +76,7 @@ const OrderPage = () => {
       quantity,
       total: dealer.price * quantity,
       paymentMethod: selectedPaymentMethod,
+      address,
       date: new Date().toISOString()
     };
 
@@ -126,6 +155,32 @@ const OrderPage = () => {
         <div className="bg-gray-50 rounded-xl p-5 mb-8 flex justify-between items-center border border-gray-100">
            <span className="text-gray-600 font-bold">Total Amount</span>
            <span className="text-3xl font-black text-amazon-dark">₹{(dealer.price * quantity).toLocaleString()}</span>
+        </div>
+
+        <div className="mb-8">
+          <h3 className="block text-sm font-bold text-gray-700 mb-3">Delivery Address</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-5 rounded-xl border border-gray-200">
+             <div className="col-span-1 md:col-span-2">
+               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Full Name</label>
+               <input type="text" className="w-full border border-gray-300 rounded-lg p-3 font-medium focus:ring-2 focus:ring-amazon-orange focus:outline-none" value={address.fullName} onChange={(e) => setAddress({...address, fullName: e.target.value})} placeholder="John Doe" />
+             </div>
+             <div className="col-span-1">
+               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Phone Number</label>
+               <input type="tel" className="w-full border border-gray-300 rounded-lg p-3 font-medium focus:ring-2 focus:ring-amazon-orange focus:outline-none" value={address.phone} onChange={(e) => setAddress({...address, phone: e.target.value})} placeholder="10-digit mobile number" />
+             </div>
+             <div className="col-span-1">
+               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Pincode</label>
+               <input type="text" className="w-full border border-gray-300 rounded-lg p-3 font-medium focus:ring-2 focus:ring-amazon-orange focus:outline-none" value={address.pincode} onChange={(e) => setAddress({...address, pincode: e.target.value})} placeholder="6 digits [0-9] PIN code" />
+             </div>
+             <div className="col-span-1 md:col-span-2">
+               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Address Line</label>
+               <textarea rows="2" className="w-full border border-gray-300 rounded-lg p-3 font-medium focus:ring-2 focus:ring-amazon-orange focus:outline-none" value={address.addressLine} onChange={(e) => setAddress({...address, addressLine: e.target.value})} placeholder="Flat, House no., Building, Company, Apartment"></textarea>
+             </div>
+             <div className="col-span-1 md:col-span-2">
+               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">City / Town</label>
+               <input type="text" className="w-full border border-gray-300 rounded-lg p-3 font-medium focus:ring-2 focus:ring-amazon-orange focus:outline-none" value={address.city} onChange={(e) => setAddress({...address, city: e.target.value})} placeholder="City" />
+             </div>
+          </div>
         </div>
 
         <div className="mb-8">
