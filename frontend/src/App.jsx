@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import OrderPage from './pages/OrderPage';
 import OrderSuccess from './pages/OrderSuccess';
 import TrackOrder from './pages/TrackOrder';
+import OrdersHistory from './pages/OrdersHistory';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/track-order/:orderId" element={<TrackOrder />} />
+          <Route path="/orders" element={<OrdersHistory />} />
         </Routes>
       </main>
     </div>

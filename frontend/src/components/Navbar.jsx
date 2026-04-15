@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
-import { ShoppingCart, MapPin, Search, ChevronDown, User, LogOut } from 'lucide-react';
+import { ShoppingCart, MapPin, Search, ChevronDown, User, LogOut, Truck } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -99,8 +99,17 @@ const Navbar = () => {
                 )}
              </div>
 
+             {/* Track Order */}
+             <Link to="/track-order/DEMO-ID" className="hidden lg:flex items-center gap-1.5 border border-transparent hover:border-white p-2 rounded transition-colors">
+                <Truck className="h-6 w-6 text-white" />
+                <div className="flex flex-col">
+                   <span className="text-[11px] text-gray-300 leading-3">Track</span>
+                   <span className="text-sm font-bold leading-4">Order</span>
+                </div>
+             </Link>
+
              {/* Returns & Orders */}
-             <Link to="/dashboard" className="hidden lg:flex flex-col border border-transparent hover:border-white p-2 rounded transition-colors">
+             <Link to="/orders" className="hidden lg:flex flex-col border border-transparent hover:border-white p-2 rounded transition-colors">
                 <span className="text-[11px] text-gray-300 leading-3">Returns</span>
                 <span className="text-sm font-bold leading-4">& Orders</span>
              </Link>
