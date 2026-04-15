@@ -40,7 +40,7 @@ export const CartProvider = ({ children }) => {
       return [...prev, { 
         product, 
         price: product.price || 0,
-        dealer: { storeName: "ConstructMart Official" },
+        dealer: { storeName: "SiteMate Official" },
         quantity: 1,
         maxQuantity: product.stock || 10
       }];

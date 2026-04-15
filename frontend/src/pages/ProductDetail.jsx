@@ -132,7 +132,7 @@ const ProductDetail = () => {
                    <p className="text-xs text-gray-500 mt-1">SSL Encrypted</p>
                 </div>
                 <div className="flex-1 bg-[#F0F2F2] rounded-xl p-4 border border-[#D5D9D9] text-center">
-                   <p className="font-bold text-amazon-dark">ConstructMart Assured</p>
+                   <p className="font-bold text-amazon-dark">SiteMate Assured</p>
                    <p className="text-xs text-gray-500 mt-1">Quality Guaranteed</p>
                 </div>
              </div>

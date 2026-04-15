@@ -17,7 +17,7 @@ const Cart = () => {
            <div className="w-48 h-48 mx-auto mb-8 bg-gray-50 rounded-full flex items-center justify-center border-4 border-gray-100 shadow-inner">
               <ShoppingBag className="w-24 h-24 text-gray-300" />
            </div>
-           <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-6 font-poppins tracking-tight">Your ConstructMart Cart is empty</h2>
+           <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-6 font-poppins tracking-tight">Your SiteMate Cart is empty</h2>
            <p className="text-lg text-gray-600 mb-10 max-w-lg mx-auto font-medium">Shop today's deals and discover the perfect materials for your next construction project.</p>
            <Link to="/" className="inline-block bg-[#FCD200] hover:bg-[#f2c200] text-amazon-dark border border-[#FCD200] font-black px-10 py-4 rounded-xl shadow-md transition-all active:scale-[0.98] text-lg">
              Sign in to your account
@@ -122,7 +122,7 @@ const Cart = () => {
                 </button>
 
                 <div className="text-xs text-center text-gray-500 font-medium">
-                   Secure transaction powered by ConstructMart
+                   Secure transaction powered by SiteMate
                 </div>
              </div>
           </div>

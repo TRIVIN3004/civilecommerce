@@ -34,7 +34,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0 pt-1 border border-transparent hover:border-white p-2 rounded transition-colors">
             <span className="text-2xl font-bold font-poppins text-white tracking-tight">
-              Construct<span className="text-amazon-orange">Mart</span>
+              Site<span className="text-amazon-orange">Mate</span>
             </span>
           </Link>
 
